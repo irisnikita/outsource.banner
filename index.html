@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style/style.css" />
+    <link rel="stylesheet" href="./style/slick.css" />
+    <link rel="stylesheet" href="./style/slick-theme.css" />
+    <title>Demo</title>
+  </head>
+  <body>
+    <!-- Components -->
+    <div class="hidden">
+      <div class="product-card">
+        <div class="__label-discount">dwq</div>
+        <img src="" alt="" class="__image" height="180" />
+        <div class="__content">
+          <div class="__name truncate-2"></div>
+          <div class="__price-block">
+            <div class="__new-price"></div>
+            &nbsp;
+            <div class="__old-price"></div>
+          </div>
+          <div class="__save"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Components -->
+
+    <div class="banner">
+      <div class="banner__header">Sản phẩm yêu thích ở Hồ Chí Mính</div>
+      <div class="banner__content"></div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="./js/slick.js"></script>
+    <script>
+      // Create our number formatter.
+      var formatter = new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+
+        // These options are needed to round to whole numbers if that's what you want.
+        //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+        //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+      });
+
+      const calculateDiscount = (newPrice, oldPrice) => {
+        return 100 - Math.round((newPrice * 100) / oldPrice);
+      };
+
+      const productList = [
+        {
+          id: "1",
+          thumb:
+            "https://cdn.nguyenkimmall.com/images/thumbnails/180/180/detailed/500/10035386-tu-lanh-sharp-inverter-165l-sj-x176e-sl-1.jpg",
+          installment: 0,
+          name: "Tủ lạnh Sharp Inverter 165 lít SJ-X176E-SL",
+          price: 5200000,
+          oldPrice: 6100000,
+        },
+        {
+          id: "2",
+          thumb:
+            "https://cdn.nguyenkimmall.com/images/thumbnails/180/180/detailed/686/10046896-dan-am-thanh-sound-bar-ht-s20r-c-sp1-1.jpg",
+          installment: 0,
+          name: "Loa Soundbar S",
+          price: 5750000,
+          oldPrice: 6490000,
+        },
+        {
+          id: "3",
+          thumb:
+            "https://cdn.nguyenkimmall.com/images/thumbnails/180/180/detailed/240/10032257-quat-lam-mat-khong-khi-shimono-sm918-xam-1.jpg",
+          installment: 0,
+          name: "Quạt làm mát không khí Shimono SM-918 Xám",
+          price: 1590000,
+          oldPrice: 4390000,
+        },
+        {
+          id: "4",
+          thumb:
+            "https://cdn.nguyenkimmall.com/images/thumbnails/180/180/detailed/640/10045275-smart-tivi-philips-4k-55-inch-55put6103s67-1_0siv-xq.jpg",
+          installment: 0,
+          name: "Smart Tivi Philips 4K 55 inch 55PUT6103S/67",
+          price: 8490000,
+          oldPrice: 9390000,
+        },
+        {
+          id: "5",
+          thumb:
+            "https://cdn.nguyenkimmall.com/images/thumbnails/180/180/detailed/540/10038057-lo-nuong-sakany-30l-vh-309s2d-1.jpg",
+          installment: 0,
+          name: "Lò nướng Sanaky 30 lít VH-309S2D",
+          price: 990000,
+          oldPrice: 1190000,
+        },
+        {
+          id: "6",
+          thumb:
+            "https://cdn.nguyenkimmall.com/images/thumbnails/180/180/detailed/730/10049300-smart-tivi-lg-4k-55-inch-55up7550ptc-1_0nq1-kj.jpg",
+          installment: 0,
+          name: "Smart Tivi LG 4K 55 inch 55UP7550PTC",
+          price: 1415000,
+          oldPrice: 2090000,
+        },
+      ];
+
+      const bannerEl = document.querySelector(".banner__content");
+
+      Array.isArray(productList) &&
+        productList.map(({ thumb, name, price, oldPrice }) => {
+          const cloneProduct = document
+            .querySelector(".product-card")
+            .cloneNode(true);
+
+          cloneProduct.querySelector("img").src = thumb;
+          cloneProduct
+            .querySelector("img")
+            .setAttribute("onerror", "this.style.opacity=0");
+          cloneProduct.querySelector(".__name").innerText = name;
+          cloneProduct.querySelector(".__new-price").innerText =
+            formatter.format(price);
+
+          if (oldPrice) {
+            const oldPriceEl = cloneProduct.querySelector(".__old-price");
+            const saveEl = cloneProduct.querySelector(".__save");
+            const labelDiscountEl =
+              cloneProduct.querySelector(".__label-discount");
+
+            oldPriceEl.style.display = "block";
+            saveEl.style.display = "block";
+            labelDiscountEl.style.display = "block";
+
+            oldPriceEl.innerText = formatter.format(oldPrice);
+            labelDiscountEl.innerText = `-${calculateDiscount(
+              price,
+              oldPrice
+            )}%`;
+            saveEl.innerText = `Tiết kiệm: ${formatter.format(
+              oldPrice - price
+            )}`;
+          }
+
+          bannerEl.appendChild(cloneProduct);
+        });
+
+      // Slick js
+      $(".banner__content").slick({
+        infinite: true,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        autoplay: true,
+        speed: 1000,
+        autoplaySpeed: 2000,
+        responsive: [
+          {
+            breakpoint: 1280,
+            settings: {
+              slidesToShow: 4,
+              slidesToScroll: 4,
+              infinite: true,
+              dots: true,
+            },
+          },
+          {
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: 3,
+              slidesToScroll: 2,
+            },
+          },
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 2,
+            },
+          },
+          {
+            breakpoint: 480,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+            },
+          },
+          // You can unslick at a given breakpoint now by adding:
+          // settings: "unslick"
+          // instead of a settings object
+        ],
+      });
+    </script>
+  </body>
+</html>
